@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import com.google.inject.Inject;
 import hudson.EnvVars;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 /**
  * Created by addihorowitz on 5/7/17.
@@ -59,7 +60,8 @@ public class ApplitoolsStep extends AbstractStepImpl {
             if (!(job instanceof TopLevelItem)) {
                 throw new Exception("should be top level job " + job);
             }
-            HashMap<String,String> overrides = new HashMap<String,String>();
+            HashMap<String,String> overrides = new HashMap();
+//            final Map<String, String> applitoolsArtifacts = ApplitoolsBuildWrapper.getApplitoolsArtifactList(run, listener);
             ApplitoolsCommon.buildEnvVariablesForExternalUsage(overrides, run, listener, step.getServerURL(), step.getApplitoolsApiKey());
 
             body = getContext().newBodyInvoker()

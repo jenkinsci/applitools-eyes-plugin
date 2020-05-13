@@ -9,16 +9,15 @@ import java.util.Map;
  * Utility class for environment variables.
  */
 public class ApplitoolsEnvironmentUtil {
+    public static final String APPLITOOLS_BATCH_NAME = "BATCH_NAME";
+    public static final String APPLITOOLS_BATCH_ID = "BATCH_ID";
+    public static final String APPLITOOLS_PROJECT_SERVER_URL = "SERVER_URL";
+    public static final String APPLITOOLS_BATCH_SEQUENCE = "BATCH_SEQUENCE";
+    public static final String APPLITOOLS_DONT_CLOSE_BATCHES = "DONT_CLOSE_BATCHES";
+    public static final String APPLITOOLS_API_KEY = "API_KEY";
+    public static final String TRUE_VALUE = "true";
 
     public static void outputVariables(final TaskListener listener, Map<String, String> env, String serverURL, String batchName, String batchId, String projectName, String applitoolsApiKey) {
-        final String APPLITOOLS_BATCH_NAME = "BATCH_NAME";
-        final String APPLITOOLS_BATCH_ID = "BATCH_ID";
-        final String APPLITOOLS_PROJECT_SERVER_URL = "SERVER_URL";
-        final String APPLITOOLS_BATCH_SEQUENCE = "BATCH_SEQUENCE";
-        final String APPLITOOLS_DONT_CLOSE_BATCHES = "DONT_CLOSE_BATCHES";
-        final String APPLITOOLS_API_KEY = "API_KEY";
-        final String TRUE_VALUE = "true";
-
         listener.getLogger().println("Creating Applitools environment variables:");
 
         outputEnvironmentVariable(listener, env, APPLITOOLS_DONT_CLOSE_BATCHES, TRUE_VALUE, true);
@@ -31,6 +30,7 @@ public class ApplitoolsEnvironmentUtil {
         }
 
         if (batchName != null && !batchName.isEmpty()) {
+//            String customersBatchId = process.env
             outputEnvironmentVariable(listener, env, APPLITOOLS_BATCH_NAME, batchName, true);
         }
 
