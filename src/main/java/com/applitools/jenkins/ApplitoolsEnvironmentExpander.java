@@ -1,10 +1,11 @@
 package com.applitools.jenkins;
-import org.jenkinsci.plugins.workflow.steps.EnvironmentExpander;
-import java.util.Map;
-import java.util.HashMap;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
+import org.jenkinsci.plugins.workflow.steps.EnvironmentExpander;
+
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by addihorowitz on 5/7/17.
@@ -19,7 +20,7 @@ public class ApplitoolsEnvironmentExpander extends EnvironmentExpander {
     }
 
     @Override
-    public void expand(@Nonnull EnvVars env) throws IOException, InterruptedException {
+    public void expand(@NonNull EnvVars env) throws IOException, InterruptedException {
         env.overrideAll(overrides);
     }
 }

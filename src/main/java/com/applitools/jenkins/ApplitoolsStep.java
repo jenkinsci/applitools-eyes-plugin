@@ -1,21 +1,21 @@
 package com.applitools.jenkins;
+import com.google.inject.Inject;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.EnvVars;
+import hudson.Extension;
 import hudson.model.*;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workflow.steps.*;
-import org.kohsuke.stapler.DataBoundConstructor;
-import hudson.Extension;
-import org.kohsuke.stapler.StaplerRequest;
 import org.jenkinsci.plugins.workflow.steps.AbstractStepExecutionImpl;
 import org.jenkinsci.plugins.workflow.steps.AbstractStepImpl;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.IOException;
-import java.util.HashMap;
-import javax.annotation.Nonnull;
-import com.google.inject.Inject;
-import hudson.EnvVars;
 import java.util.Collections;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
+
 /**
  * Created by addihorowitz on 5/7/17.
  */
@@ -105,7 +105,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
         }
 
         @Override
-        public void stop(@Nonnull Throwable cause) throws Exception {
+        public void stop(@NonNull Throwable cause) throws Exception {
             if (body!=null) {
                 body.cancel(cause);
             }
