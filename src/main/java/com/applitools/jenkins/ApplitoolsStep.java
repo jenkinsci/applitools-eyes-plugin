@@ -1,23 +1,23 @@
 package com.applitools.jenkins;
+
+import com.google.inject.Inject;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.EnvVars;
+import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
-import net.sf.json.JSONObject;
-import org.jenkinsci.plugins.workflow.steps.*;
-import org.kohsuke.stapler.DataBoundConstructor;
-import hudson.Extension;
-import org.kohsuke.stapler.StaplerRequest;
-import org.jenkinsci.plugins.workflow.steps.AbstractStepExecutionImpl;
-import org.jenkinsci.plugins.workflow.steps.AbstractStepImpl;
-
 import java.io.IOException;
-import java.util.HashMap;
-import com.google.inject.Inject;
-import hudson.EnvVars;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.workflow.steps.*;
+import org.jenkinsci.plugins.workflow.steps.AbstractStepExecutionImpl;
+import org.jenkinsci.plugins.workflow.steps.AbstractStepImpl;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
 
 import static com.applitools.jenkins.ApplitoolsBuildWrapper.isCustomBatchId;
 
@@ -29,20 +29,20 @@ public class ApplitoolsStep extends AbstractStepImpl {
     private final boolean notifyOnCompletion;
     private final String applitoolsApiKey;
     private final boolean dontCloseBatches;
-    private final boolean deleteBatch;
+    private final boolean eyesScmIntegrationEnabled;
 
     @DataBoundConstructor
     public ApplitoolsStep(String serverURL,
                           boolean notifyOnCompletion,
                           String applitoolsApiKey,
                           boolean dontCloseBatches,
-                          boolean deleteBatch)
+                          boolean eyesScmIntegrationEnabled)
     {
         super(true);
         this.notifyOnCompletion = notifyOnCompletion;
         this.applitoolsApiKey = applitoolsApiKey;
         this.dontCloseBatches = dontCloseBatches;
-        this.deleteBatch = deleteBatch;
+        this.eyesScmIntegrationEnabled = eyesScmIntegrationEnabled;
         if (serverURL != null && !serverURL.isEmpty())
             this.serverURL = serverURL;
     }
@@ -59,7 +59,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
 
     public boolean getNotifyOnCompletion() { return this.notifyOnCompletion; }
     public boolean getDontCloseBatches() { return this.dontCloseBatches; }
-    public boolean getDeleteBatch() { return this.deleteBatch; }
+    public boolean geteyesScmIntegrationEnabled() { return this.eyesScmIntegrationEnabled; }
 
     public static class ApplitoolsStepExecution extends AbstractStepExecutionImpl {
         private static final long serialVersionUID = 1;
@@ -88,12 +88,20 @@ public class ApplitoolsStep extends AbstractStepImpl {
             if (env != null) {
                 overrides.putAll(env);
             }
-            final Map<String, String> applitoolsArtifacts = ApplitoolsBuildWrapper.getApplitoolsArtifactList(getContext().get(FilePath.class), listener);
-            ApplitoolsCommon.buildEnvVariablesForExternalUsage(overrides, run, listener, workspace, launcher, step.getServerURL(), step.getApplitoolsApiKey(), applitoolsArtifacts);
+            final Map<String, String> applitoolsArtifacts = ApplitoolsBuildWrapper.getApplitoolsArtifactList(
+                    getContext().get(FilePath.class), listener);
+
+            ApplitoolsCommon.buildEnvVariablesForExternalUsage(overrides, run, listener, workspace, launcher,
+                    step.getServerURL(), step.getApplitoolsApiKey(), applitoolsArtifacts,
+                    step.geteyesScmIntegrationEnabled());
 
             body = getContext().newBodyInvoker()
-                    .withContext(EnvironmentExpander.merge(getContext().get(EnvironmentExpander.class), new ApplitoolsEnvironmentExpander(overrides)))
-                    .withCallback(new BodyExecutionCallback() {
+                    .withContext(
+                            EnvironmentExpander.merge(
+                                    getContext().get(EnvironmentExpander.class),
+                                    new ApplitoolsEnvironmentExpander(overrides)
+                            )
+                    ).withCallback(new BodyExecutionCallback() {
                         @Override
                         public void onStart(StepContext context) {
                             try {
@@ -102,7 +110,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
                                         step.getNotifyOnCompletion(),
                                         step.getApplitoolsApiKey(),
                                         step.getDontCloseBatches(),
-                                        step.getDeleteBatch());
+                                        step.geteyesScmIntegrationEnabled());
                             } catch (Exception ex) {
                                 listener.getLogger().println("Failed to update properties");
                             }
@@ -131,8 +139,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
                                             run, listener,
                                             step.getServerURL(),
                                             step.getNotifyOnCompletion(),
-                                            step.getApplitoolsApiKey(),
-                                            step.getDeleteBatch());
+                                            step.getApplitoolsApiKey());
                                 }
                             }
                             catch (IOException ex) {
@@ -187,7 +194,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
                     formData.getBoolean("notifyOnCompletion"),
                     formData.getString("applitoolsApiKey"),
                     formData.getBoolean("dontCloseBatches"),
-                    formData.getBoolean("deleteBatch")
+                    formData.getBoolean("eyesScmIntegrationEnabled")
                     );
         }
 

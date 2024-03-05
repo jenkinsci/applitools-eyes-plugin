@@ -6,20 +6,18 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
 import hudson.tasks.BuildWrapper;
+import hudson.util.FormValidation;
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.regex.Matcher;
 import jenkins.util.VirtualFile;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import hudson.util.FormValidation;
 import org.kohsuke.stapler.QueryParameter;
-
-import java.net.URL;
-import java.util.regex.Matcher;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Code for the build page.
@@ -30,7 +28,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
     public boolean notifyOnCompletion;
     public String applitoolsApiKey;
     private boolean dontCloseBatches;
-    private boolean deleteBatch;
+    private boolean eyesScmIntegrationEnabled;
     static boolean isCustomBatchId = false;
 
     static final Map<String, String> ARTIFACT_PATHS = new HashMap<>();
@@ -48,11 +46,11 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
 
     @DataBoundConstructor
     public ApplitoolsBuildWrapper(String serverURL, boolean notifyOnCompletion,
-                                  String applitoolsApiKey, boolean dontCloseBatches, boolean deleteBatch) {
+                                  String applitoolsApiKey, boolean dontCloseBatches, boolean eyesScmIntegrationEnabled) {
         this.applitoolsApiKey = applitoolsApiKey;
         this.notifyOnCompletion = notifyOnCompletion;
         this.dontCloseBatches = dontCloseBatches;
-        this.deleteBatch = deleteBatch;
+        this.eyesScmIntegrationEnabled = eyesScmIntegrationEnabled;
         if (serverURL != null && !serverURL.isEmpty())
         {
             if (DescriptorImpl.validURL(serverURL))
@@ -77,7 +75,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
                 }
                 if (!dontCloseBatches) {
                     ApplitoolsCommon.closeBatch(
-                            build, listener, serverURL, notifyOnCompletion, applitoolsApiKey, deleteBatch);
+                            build, listener, serverURL, notifyOnCompletion, applitoolsApiKey);
                 }
                 return true;
             }
@@ -88,7 +86,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
                 if (workspace != null) {
                     Map <String, String> applitoolsArtifacts = getApplitoolsArtifactList(workspace, listener);
                     ApplitoolsCommon.buildEnvVariablesForExternalUsage(env, build, listener, workspace, launcher,
-                            serverURL, applitoolsApiKey, applitoolsArtifacts);
+                            serverURL, applitoolsApiKey, applitoolsArtifacts, eyesScmIntegrationEnabled);
                 }
             }
         };
@@ -129,7 +127,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
         listener.getLogger().println("Starting Applitools Eyes pre-build (server URL is '" + this.serverURL + "') apiKey is " + this.applitoolsApiKey);
 
         ApplitoolsCommon.integrateWithApplitools(build,
-                this.serverURL, this.notifyOnCompletion, this.applitoolsApiKey, this.dontCloseBatches, this.deleteBatch);
+                this.serverURL, this.notifyOnCompletion, this.applitoolsApiKey, this.dontCloseBatches, this.eyesScmIntegrationEnabled);
 
         listener.getLogger().println("Finished Applitools Eyes pre-build");
     }
@@ -186,7 +184,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
                     formData.getBoolean("notifyOnCompletion"),
                     formData.getString("applitoolsApiKey"),
                     formData.getBoolean("dontCloseBatches"),
-                    formData.getBoolean("deleteBatch"));
+                    formData.getBoolean("eyesScmIntegrationEnabled"));
         }
     }
 }

@@ -18,7 +18,7 @@ public class ApplitoolsProjectConfigProperty extends JobProperty<AbstractProject
     private String applitoolsApiKey;
     private boolean dontCloseBatches;
 
-    private boolean deleteBatch;
+    private boolean eyesScmIntegrationEnabled;
 
     public ApplitoolsProjectConfigProperty(String serverURL, boolean notifyOnCompletion, String applitoolsApiKey) {
         this.serverURL = serverURL;
@@ -56,9 +56,9 @@ public class ApplitoolsProjectConfigProperty extends JobProperty<AbstractProject
         this.dontCloseBatches = dontCloseBatches;
     }
 
-    public boolean getDeleteBatch() { return deleteBatch; }
+    public boolean geteyesScmIntegrationEnabled() { return eyesScmIntegrationEnabled; }
 
-    public void setDeleteBatch(boolean deleteBatch) { this.deleteBatch = deleteBatch; }
+    public void seteyesScmIntegrationEnabled(boolean eyesScmIntegrationEnabled) { this.eyesScmIntegrationEnabled = eyesScmIntegrationEnabled; }
 
     @Override
     public JobPropertyDescriptor getDescriptor() {

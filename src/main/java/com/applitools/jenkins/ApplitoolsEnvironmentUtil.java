@@ -1,5 +1,6 @@
 package com.applitools.jenkins;
 
+import hudson.model.Run;
 import hudson.model.TaskListener;
 
 import java.util.Map;
@@ -16,7 +17,9 @@ public class ApplitoolsEnvironmentUtil {
     public static final String APPLITOOLS_API_KEY = "API_KEY";
     public static final String TRUE_VALUE = "true";
 
-    public static void outputVariables(final TaskListener listener, Map<String, String> env, String serverURL, String batchName, String batchId, String projectName, String applitoolsApiKey) {
+    public static void outputVariables(final TaskListener listener, Run<?, ?> build,
+                                       Map<String, String> env, String serverURL, String batchName,
+                                       String batchId, String projectName, String applitoolsApiKey) {
         listener.getLogger().println("Creating Applitools environment variables:");
 
         outputEnvironmentVariable(listener, env, APPLITOOLS_DONT_CLOSE_BATCHES, TRUE_VALUE, true);
@@ -24,6 +27,7 @@ public class ApplitoolsEnvironmentUtil {
         if (serverURL != null && !serverURL.isEmpty()) {
             outputEnvironmentVariable(listener, env, APPLITOOLS_PROJECT_SERVER_URL, serverURL, true);
         }
+
         if (batchId != null && !batchId.isEmpty()) {
             outputEnvironmentVariable(listener, env, APPLITOOLS_BATCH_ID, batchId, true);
         }

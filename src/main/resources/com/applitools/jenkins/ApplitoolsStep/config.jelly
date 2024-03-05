@@ -13,7 +13,7 @@
     <f:entry title="${%dontCloseBatches.text.text}" field="dontCloseBatches">
         <f:checkbox default="${descriptor.APPLITOOLS_DONT_CLOSE_BATCHES}" />
     </f:entry>
-    <f:entry title="${%deleteBatch.text.text}" field="deleteBatch">
-        <f:checkbox default="${descriptor.DELETE_BATCH}" />
+    <f:entry title="${%eyesScmIntegrationEnabled.text.text}" field="eyesScmIntegrationEnabled">
+        <f:checkbox default="${descriptor.EYES_SCM_INTEGRATION_ENABLED}" />
     </f:entry>
 </j:jelly>
