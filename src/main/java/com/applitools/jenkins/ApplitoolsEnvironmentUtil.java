@@ -14,6 +14,7 @@ public class ApplitoolsEnvironmentUtil {
     public static final String APPLITOOLS_PROJECT_SERVER_URL = "SERVER_URL";
     public static final String APPLITOOLS_BATCH_SEQUENCE = "BATCH_SEQUENCE";
     public static final String APPLITOOLS_DONT_CLOSE_BATCHES = "DONT_CLOSE_BATCHES";
+    public static final String EYES_SCM_INTEGRATION_ENABLED = "SCM_INTEGRATION_ENABLED";
     public static final String APPLITOOLS_API_KEY = "API_KEY";
     public static final String TRUE_VALUE = "true";
 

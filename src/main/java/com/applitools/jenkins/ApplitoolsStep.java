@@ -59,7 +59,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
 
     public boolean getNotifyOnCompletion() { return this.notifyOnCompletion; }
     public boolean getDontCloseBatches() { return this.dontCloseBatches; }
-    public boolean geteyesScmIntegrationEnabled() { return this.eyesScmIntegrationEnabled; }
+    public boolean getEyesScmIntegrationEnabled() { return this.eyesScmIntegrationEnabled; }
 
     public static class ApplitoolsStepExecution extends AbstractStepExecutionImpl {
         private static final long serialVersionUID = 1;
@@ -93,7 +93,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
 
             ApplitoolsCommon.buildEnvVariablesForExternalUsage(overrides, run, listener, workspace, launcher,
                     step.getServerURL(), step.getApplitoolsApiKey(), applitoolsArtifacts,
-                    step.geteyesScmIntegrationEnabled());
+                    step.getEyesScmIntegrationEnabled());
 
             body = getContext().newBodyInvoker()
                     .withContext(
@@ -110,7 +110,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
                                         step.getNotifyOnCompletion(),
                                         step.getApplitoolsApiKey(),
                                         step.getDontCloseBatches(),
-                                        step.geteyesScmIntegrationEnabled());
+                                        step.getEyesScmIntegrationEnabled());
                             } catch (Exception ex) {
                                 listener.getLogger().println("Failed to update properties");
                             }
