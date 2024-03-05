@@ -23,11 +23,14 @@ import jenkins.model.ArtifactManager;
 import jenkins.util.VirtualFile;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.mutable.MutableBoolean;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -115,11 +118,13 @@ public class ApplitoolsCommon {
 
         HttpPost request = new HttpPost(targetUrl);
         String jsonData = "{\"secondaryBatchPointerId\":\"" + batchId + "\"}";
-        HttpEntity params= new StringEntity(jsonData);
+        HttpEntity params= new StringEntity(jsonData, ContentType.APPLICATION_JSON);
         request.setEntity(params);
         try {
             listener.getLogger().printf("Batch Bind Pointers request called with %s%n", buildId);
-            int statusCode = httpClient.execute(request).getStatusLine().getStatusCode();
+            HttpResponse httpResponse = httpClient.execute(request);
+            StatusLine statusLine = httpResponse.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
             listener.getLogger().println("Batch binding is done with " + statusCode + " status");
             if (statusCode >= 400) {
                 listener.error("Batch binding failed with " + statusCode + " status");
