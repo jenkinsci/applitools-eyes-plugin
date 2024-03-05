@@ -17,13 +17,15 @@ public class ApplitoolsProjectConfigProperty extends JobProperty<AbstractProject
     private boolean notifyOnCompletion;
     private String applitoolsApiKey;
     private boolean dontCloseBatches;
-
     private boolean eyesScmIntegrationEnabled;
 
-    public ApplitoolsProjectConfigProperty(String serverURL, boolean notifyOnCompletion, String applitoolsApiKey) {
+    public ApplitoolsProjectConfigProperty(String serverURL, boolean notifyOnCompletion, String applitoolsApiKey,
+                                           boolean dontCloseBatches, boolean eyesScmIntegrationEnabled) {
         this.serverURL = serverURL;
         this.notifyOnCompletion = notifyOnCompletion;
         this.applitoolsApiKey = applitoolsApiKey;
+        this.dontCloseBatches = dontCloseBatches;
+        this.eyesScmIntegrationEnabled = eyesScmIntegrationEnabled;
     }
 
     public String getApplitoolsApiKey() {
@@ -56,9 +58,13 @@ public class ApplitoolsProjectConfigProperty extends JobProperty<AbstractProject
         this.dontCloseBatches = dontCloseBatches;
     }
 
-    public boolean geteyesScmIntegrationEnabled() { return eyesScmIntegrationEnabled; }
+    public boolean getEyesScmIntegrationEnabled() {
+        return eyesScmIntegrationEnabled;
+    }
 
-    public void seteyesScmIntegrationEnabled(boolean eyesScmIntegrationEnabled) { this.eyesScmIntegrationEnabled = eyesScmIntegrationEnabled; }
+    public void setEyesScmIntegrationEnabled(boolean eyesScmIntegrationEnabled) {
+        this.eyesScmIntegrationEnabled = eyesScmIntegrationEnabled;
+    }
 
     @Override
     public JobPropertyDescriptor getDescriptor() {

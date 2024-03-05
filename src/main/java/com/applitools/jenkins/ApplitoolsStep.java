@@ -57,9 +57,16 @@ public class ApplitoolsStep extends AbstractStepImpl {
         return this.applitoolsApiKey;
     }
 
-    public boolean getNotifyOnCompletion() { return this.notifyOnCompletion; }
-    public boolean getDontCloseBatches() { return this.dontCloseBatches; }
-    public boolean getEyesScmIntegrationEnabled() { return this.eyesScmIntegrationEnabled; }
+    public boolean getNotifyOnCompletion() {
+        return this.notifyOnCompletion;
+    }
+
+    public boolean getDontCloseBatches() {
+        return this.dontCloseBatches;
+    }
+    public boolean getEyesScmIntegrationEnabled() {
+        return this.eyesScmIntegrationEnabled;
+    }
 
     public static class ApplitoolsStepExecution extends AbstractStepExecutionImpl {
         private static final long serialVersionUID = 1;

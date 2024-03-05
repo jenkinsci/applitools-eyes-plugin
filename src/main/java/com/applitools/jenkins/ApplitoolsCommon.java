@@ -76,14 +76,15 @@ public class ApplitoolsCommon {
                 ((ApplitoolsProjectConfigProperty)property).setNotifyOnCompletion(notifyOnCompletion);
                 ((ApplitoolsProjectConfigProperty)property).setApplitoolsApiKey(applitoolsApiKey);
                 ((ApplitoolsProjectConfigProperty)property).setDontCloseBatches(dontCloseBatches);
-                ((ApplitoolsProjectConfigProperty)property).seteyesScmIntegrationEnabled(eyesScmIntegrationEnabled);
+                ((ApplitoolsProjectConfigProperty)property).setEyesScmIntegrationEnabled(eyesScmIntegrationEnabled);
                 found = true;
                 break;
             }
         }
         if (!found)
         {
-            JobProperty jp = new ApplitoolsProjectConfigProperty(serverURL, notifyOnCompletion, applitoolsApiKey);
+            JobProperty jp = new ApplitoolsProjectConfigProperty(
+                    serverURL, notifyOnCompletion, applitoolsApiKey, dontCloseBatches, eyesScmIntegrationEnabled);
             run.getParent().addProperty(jp);
         }
         run.getParent().save();

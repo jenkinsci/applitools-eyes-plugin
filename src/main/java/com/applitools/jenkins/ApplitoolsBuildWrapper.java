@@ -27,8 +27,8 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
     public String serverURL;
     public boolean notifyOnCompletion;
     public String applitoolsApiKey;
-    private boolean dontCloseBatches;
-    private boolean eyesScmIntegrationEnabled;
+    public boolean dontCloseBatches;
+    public boolean eyesScmIntegrationEnabled;
     static boolean isCustomBatchId = false;
 
     static final Map<String, String> ARTIFACT_PATHS = new HashMap<>();
@@ -134,8 +134,9 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
 
     @Extension
     public static final class DescriptorImpl extends Descriptor<BuildWrapper> {
-        public static String APPLITOOLS_DEFAULT_URL="https://eyes.applitools.com";
-        public static boolean NOTIFY_ON_COMPLETION=true;
+        public static String APPLITOOLS_DEFAULT_URL = "https://eyes.applitools.com";
+        public static boolean NOTIFY_ON_COMPLETION = true;
+        public static boolean EYES_SCM_INTEGRATION_ENABLED = false;
 
         public DescriptorImpl() {
             load();
