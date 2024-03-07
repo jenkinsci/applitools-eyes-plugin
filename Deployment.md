@@ -10,5 +10,5 @@
    ```
    If you don't have the password, ask someone who have it, or look for it in the
    vault in Azure: *JenkinsPluginKV :: Secrets :: jenkins-plugin-password*
-4. Run `mvn deploy` (or click *deploy* in the maven lifecycle menu in IntelliJ IDEA IDE)
+4. Run `mvn clean install deploy` (or click *deploy* in the maven lifecycle menu in IntelliJ IDEA IDE)
 5. Notice it might take a couple of hours until you see the updated plugin in the plugins page.
