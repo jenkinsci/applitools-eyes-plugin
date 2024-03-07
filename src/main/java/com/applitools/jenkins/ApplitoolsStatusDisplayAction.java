@@ -85,12 +85,6 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
     }
 
     public static String generateBatchId(Map<String, String> env, String projectName, int buildNumber,
-                                         Calendar buildTimestamp, Map<String, String> applitoolsValuesFromArtifacts) {
-        return generateBatchId(env, projectName, buildNumber, buildTimestamp, applitoolsValuesFromArtifacts,
-                null, false);
-    }
-
-    public static String generateBatchId(Map<String, String> env, String projectName, int buildNumber,
                                          Calendar buildTimestamp, Map<String, String> applitoolsValuesFromArtifacts,
                                          MutableBoolean isCustom, boolean scmIntegrationEnabled) {
         if (!scmIntegrationEnabled) {

@@ -75,7 +75,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
                 }
                 if (!dontCloseBatches) {
                     ApplitoolsCommon.closeBatch(
-                            build, listener, serverURL, notifyOnCompletion, applitoolsApiKey);
+                            build, listener, serverURL, notifyOnCompletion, applitoolsApiKey, eyesScmIntegrationEnabled);
                 }
                 return true;
             }

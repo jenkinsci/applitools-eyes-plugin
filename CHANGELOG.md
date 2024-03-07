@@ -1,4 +1,8 @@
-## [vNext] - dNext
+## [1.16] - 2024-03-07
+### Added
+- Added support for Eyes SCM integration [Trello 3273](https://trello.com/c/GFvXy9jP)
+
+## [1.15] - 2024-01-28
 ### Updated
 - Check if using a custom batch id before archiving it. [Trello 2201](https://trello.com/c/B8KrpLpF)
 - Update `jenkins.version` to version `2.361.4` as [recommended here](https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/).

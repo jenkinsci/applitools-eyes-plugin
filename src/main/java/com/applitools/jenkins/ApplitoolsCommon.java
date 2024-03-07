@@ -201,7 +201,7 @@ public class ApplitoolsCommon {
     public static String getEnv(String key) { return env.get(key); }
 
     public static void closeBatch(Run<?,?> run, TaskListener listener, String serverURL,
-                                  boolean notifyOnCompletion, String applitoolsApiKey)
+                                  boolean notifyOnCompletion, String applitoolsApiKey, boolean scmIntegrationEnabled)
             throws IOException {
         if (notifyOnCompletion && applitoolsApiKey != null && !applitoolsApiKey.isEmpty()) {
             String batchId = ApplitoolsStatusDisplayAction.generateBatchId(
@@ -212,7 +212,8 @@ public class ApplitoolsCommon {
                 ApplitoolsCommon.checkApplitoolsArtifacts(
                     run.getArtifacts(),
                     run.getArtifactManager().root()
-                )
+                ),
+                null, scmIntegrationEnabled
             );
             HttpClient httpClient = HttpClientBuilder.create().build();
             URI targetUrl = null;

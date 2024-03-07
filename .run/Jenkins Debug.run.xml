@@ -1,0 +1,37 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Jenkins Debug" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <option name="myGeneralSettings" />
+      <option name="myRunnerSettings" />
+      <option name="myRunnerParameters">
+        <MavenRunnerParameters>
+          <option name="cmdOptions" />
+          <option name="profiles">
+            <set />
+          </option>
+          <option name="goals">
+            <list>
+              <option value="-Dhpi-plugin.version=3.51" />
+              <option value="-DskipTests" />
+              <option value="-DjenkinsHome=/tmp/sanity-check-maven-hpi-plugin" />
+              <option value="clean" />
+              <option value="package" />
+              <option value="hpi:run" />
+            </list>
+          </option>
+          <option name="multimoduleDir" />
+          <option name="pomFileName" value="../jenkins_eyes" />
+          <option name="profilesMap">
+            <map />
+          </option>
+          <option name="projectsCmdOptionValues">
+            <list />
+          </option>
+          <option name="resolveToWorkspace" value="false" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/../jenkins" />
+        </MavenRunnerParameters>
+      </option>
+    </MavenSettings>
+    <method v="2" />
+  </configuration>
+</component>

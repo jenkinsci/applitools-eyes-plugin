@@ -146,7 +146,8 @@ public class ApplitoolsStep extends AbstractStepImpl {
                                             run, listener,
                                             step.getServerURL(),
                                             step.getNotifyOnCompletion(),
-                                            step.getApplitoolsApiKey());
+                                            step.getApplitoolsApiKey(),
+                                            step.getEyesScmIntegrationEnabled());
                                 }
                             }
                             catch (IOException ex) {

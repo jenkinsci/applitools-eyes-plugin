@@ -44,6 +44,31 @@ node {
 }
 ```
 
+### Special Arguments
+
+* **`serverUrl`**: Defines a custom Eyes server URL (in case of a private cloud or on-prem Eyes)
+* **`applitoolsApiKey`**: Define the API key for the Eyes account. Best practice is to use an env-var with `credentials` like this:
+    ```
+    environment{
+        APPLITOOLS_API_KEY = credentials('APPLITOOLS_API_KEY')
+    }
+    ...
+    stage{
+        Applitools(applitoolsApiKey: "$APPLITOOLS_API_KEY")
+    }
+ 
+    ```
+    You can find more info about setting Jenkins credentials [here](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#secret-text)
+* **`dontCloseBatches`**: If set to `true` the batch will not be closed, allowing other tests to be added to the same batch. If set to `false` the batch will be closed, and any other test with the same batch ID will be added to a new batch.
+* **`eyesScmIntegrationEnabled`**: If set to `true`, the desired batch ID will be used internally, but a generated batch ID will be used externally. Use this if you want to use the SCM Integration feature in Eyes, which means you'll need to set your batch ID to the commit SHA. In a Jenkins Pipeline this can be done like this:
+    ```
+    environment {
+        APPLITOOLS_BATCH_ID = "${env.GIT_COMMIT}"
+    }
+    ```
+    or leave it unset alltogether which will look for the `GIT_COMMIT` env var for you.
+* **`notifyOnCompletion`**: If set to `true`, will tell Eyes server that the batch was closed and it can send notifications about it as configured in the Eyes Dashboard Admin Panel.
+
 ### Updating Your Tests Code
 Jenkins exports the batch ID to the APPLITOOLS_BATCH_ID environment variable. You need to update your tests code to use this ID in order for your tests to appear in the Applitools window report in Jenkins.
 
