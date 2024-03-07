@@ -147,10 +147,18 @@ public class ApplitoolsCommon {
         MutableBoolean isCustom = new MutableBoolean(false);
 
         String batchId = ApplitoolsStatusDisplayAction.generateBatchId(
-                env, projectName, build.getNumber(), build.getTimestamp(), artifacts, isCustom);
+                env, projectName, build.getNumber(), build.getTimestamp(), artifacts, isCustom, scmIntegrationEnabled);
 
         if (scmIntegrationEnabled) {
-            String buildId = "build-" + build.getNumber();
+
+            String buildId = null;
+            if (env.get("APPLITOOLS_BATCH_ID") != null) {
+                buildId = env.get("APPLITOOLS_BATCH_ID");
+            }
+            else {
+                buildId = env.get("GIT_COMMIT");
+            }
+
             try {
                 sendBindBatchPointersRequest(serverURL, batchId, buildId, applitoolsApiKey, listener);
             } catch (IOException e) {

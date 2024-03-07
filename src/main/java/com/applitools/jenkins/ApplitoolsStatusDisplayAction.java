@@ -25,6 +25,7 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
     private final Run build;
     private Map<String, String> applitoolsValuesFromArtifacts;
     private static final Logger logger = Logger.getLogger(ApplitoolsStatusDisplayAction.class.getName());
+    private boolean scmIntegrationEnabled;
 
     @SuppressWarnings("rawtypes")
     public ApplitoolsStatusDisplayAction(Run build) {
@@ -37,6 +38,7 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
         for (Object property : build.getParent().getAllProperties()) {
             if (property instanceof ApplitoolsProjectConfigProperty) {
                 this.serverURL = ((ApplitoolsProjectConfigProperty) property).getServerURL();
+                this.scmIntegrationEnabled = ((ApplitoolsProjectConfigProperty) property).getEyesScmIntegrationEnabled();
                 break;
             }
         }
@@ -69,7 +71,8 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
     }
 
     private String generateBatchId() {
-        return generateBatchId(ApplitoolsCommon.getEnv(), this.projectName, this.buildNumber, this.buildTimestamp, this.applitoolsValuesFromArtifacts);
+        return generateBatchId(ApplitoolsCommon.getEnv(), this.projectName, this.buildNumber,
+                this.buildTimestamp, this.applitoolsValuesFromArtifacts, null, this.scmIntegrationEnabled);
     }
 
     private String generateIframeURL() {
@@ -81,31 +84,31 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
         return serverURL + "/app/batchesnoauth/?startInfoBatchId=" + generateBatchId() + "&hideBatchList=true&intercom=false&agentId=eyes-jenkins-" + ApplitoolsCommon.getPluginVersion();
     }
 
-    public static String generateBatchId(Map<String, String> env, String projectName, int buildNumber, Calendar buildTimestamp) {
-        return generateBatchId(env, projectName, buildNumber, buildTimestamp, null, null);
+    public static String generateBatchId(Map<String, String> env, String projectName, int buildNumber,
+                                         Calendar buildTimestamp, Map<String, String> applitoolsValuesFromArtifacts) {
+        return generateBatchId(env, projectName, buildNumber, buildTimestamp, applitoolsValuesFromArtifacts,
+                null, false);
     }
 
-    public static String generateBatchId(Map<String, String> env, String projectName, int buildNumber, Calendar buildTimestamp,
-                                         Map<String, String> applitoolsValuesFromArtifacts) {
-        return generateBatchId(env, projectName, buildNumber, buildTimestamp, applitoolsValuesFromArtifacts, null);
-    }
-
-    public static String generateBatchId(Map<String, String> env, String projectName, int buildNumber, Calendar buildTimestamp,
-                                         Map<String, String> applitoolsValuesFromArtifacts, MutableBoolean isCustom) {
-        if (applitoolsValuesFromArtifacts != null &&
-                applitoolsValuesFromArtifacts.containsKey(ApplitoolsEnvironmentUtil.APPLITOOLS_BATCH_ID)) {
-            return applitoolsValuesFromArtifacts.get(ApplitoolsEnvironmentUtil.APPLITOOLS_BATCH_ID);
-        } else if (env != null) {
-            String batchId = env.get("APPLITOOLS_BATCH_ID");
-            if (batchId != null) {
-                ApplitoolsBuildWrapper.isCustomBatchId = true;
-                if (isCustom != null) {
-                    isCustom.setValue(true);
-                    if (applitoolsValuesFromArtifacts != null) {
-                        applitoolsValuesFromArtifacts.put(ApplitoolsEnvironmentUtil.APPLITOOLS_BATCH_ID, batchId);
+    public static String generateBatchId(Map<String, String> env, String projectName, int buildNumber,
+                                         Calendar buildTimestamp, Map<String, String> applitoolsValuesFromArtifacts,
+                                         MutableBoolean isCustom, boolean scmIntegrationEnabled) {
+        if (!scmIntegrationEnabled) {
+            if (applitoolsValuesFromArtifacts != null &&
+                    applitoolsValuesFromArtifacts.containsKey(ApplitoolsEnvironmentUtil.APPLITOOLS_BATCH_ID)) {
+                return applitoolsValuesFromArtifacts.get(ApplitoolsEnvironmentUtil.APPLITOOLS_BATCH_ID);
+            } else if (env != null) {
+                String batchId = env.get("APPLITOOLS_BATCH_ID");
+                if (batchId != null) {
+                    ApplitoolsBuildWrapper.isCustomBatchId = true;
+                    if (isCustom != null) {
+                        isCustom.setValue(true);
+                        if (applitoolsValuesFromArtifacts != null) {
+                            applitoolsValuesFromArtifacts.put(ApplitoolsEnvironmentUtil.APPLITOOLS_BATCH_ID, batchId);
+                        }
                     }
+                    return batchId;
                 }
-                return batchId;
             }
         }
 
