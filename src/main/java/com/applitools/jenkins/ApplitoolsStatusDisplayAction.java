@@ -3,7 +3,10 @@ package com.applitools.jenkins;
 import hudson.model.Result;
 import hudson.model.Run;
 import org.apache.commons.lang.mutable.MutableBoolean;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
@@ -13,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletException;
 
 /**
  * Encapsulates the Applitools' status display action.
@@ -40,19 +44,23 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
         for (Object property : build.getParent().getAllProperties()) {
             if (property instanceof ApplitoolsProjectConfigProperty) {
                 this.serverURL = ((ApplitoolsProjectConfigProperty) property).getServerURL();
-                this.scmIntegrationEnabled = ((ApplitoolsProjectConfigProperty) property).getEyesScmIntegrationEnabled();
+                this.scmIntegrationEnabled = ((ApplitoolsProjectConfigProperty) property)
+                        .getEyesScmIntegrationEnabled();
                 break;
             }
         }
     }
 
+    @Override
+    public String getUrlName() {
+        return "applitoolsStatus";
+    }
 
     @Override
     public String getIframeText() {
-        this.applitoolsValuesFromArtifacts =
-                ApplitoolsCommon.checkApplitoolsArtifacts(
-                        this.build.getArtifacts(),
-                        this.build.getArtifactManager().root());
+        this.applitoolsValuesFromArtifacts = ApplitoolsCommon.checkApplitoolsArtifacts(
+                this.build.getArtifacts(),
+                this.build.getArtifactManager().root());
         try {
             String iframeURL = generateIframeURL();
             if (iframeURL == null) {
@@ -60,12 +68,10 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
                 // remove iframes from old reports
                 return "";
             }
-//            Result result = this.build.getResult();
-//            if (result == null || !result.isCompleteBuild()) {
-//                URL resUrl = getClass().getResource("/waitForResults.html");
-//                iframeURL = "waitForResults.html";
-//                return "<iframe id=\"frame\" src=\"" + resUrl + "\"></iframe>\n";
-//            }
+            Result result = this.build.getResult();
+            if (result == null || !result.isCompleteBuild()) {
+                iframeURL = "applitoolsStatus/waitForResults";
+            }
             return "<iframe id=\"frame\" src=\"" + iframeURL +
                     "\" style=\"overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:710px;width:1024px;max-width:100%;resize:vertical;\"></iframe>\n";
         } catch (Exception ex) {
@@ -88,15 +94,17 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
             return null;
         }
 
-        return serverURL + "/app/batchesnoauth/?startInfoBatchId=" + generateBatchId() + "&hideBatchList=true&intercom=false&agentId=eyes-jenkins-" + ApplitoolsCommon.getPluginVersion();
+        return serverURL + "/app/batchesnoauth/?startInfoBatchId=" + generateBatchId()
+                + "&hideBatchList=true&intercom=false&agentId=eyes-jenkins-" + ApplitoolsCommon.getPluginVersion();
     }
 
     public static String generateBatchId(Map<String, String> env, String projectName, int buildNumber,
-                                         Calendar buildTimestamp, Map<String, String> applitoolsValuesFromArtifacts,
-                                         MutableBoolean isCustom, boolean scmIntegrationEnabled) {
+            Calendar buildTimestamp, Map<String, String> applitoolsValuesFromArtifacts,
+            MutableBoolean isCustom, boolean scmIntegrationEnabled) {
         String batchId = null;
         if (!scmIntegrationEnabled) {
-            batchId = getBatchId(env, projectName, buildNumber, buildTimestamp, applitoolsValuesFromArtifacts, isCustom);
+            batchId = getBatchId(env, projectName, buildNumber, buildTimestamp, applitoolsValuesFromArtifacts,
+                    isCustom);
         }
 
         if (batchId != null) {
@@ -106,12 +114,13 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
         SimpleDateFormat buildDate = new SimpleDateFormat(TIMESTAMP_PATTERN);
         buildDate.setTimeZone(buildTimestamp.getTimeZone());
 
-        return BATCH_ID_PREFIX + "-" + projectName + "-" + buildNumber + "-" + buildDate.format(buildTimestamp.getTime());
+        return BATCH_ID_PREFIX + "-" + projectName + "-" + buildNumber + "-"
+                + buildDate.format(buildTimestamp.getTime());
     }
 
     public static String getBatchId(Map<String, String> env, String projectName, int buildNumber,
-                                    Calendar buildTimestamp, Map<String, String> applitoolsValuesFromArtifacts,
-                                    MutableBoolean isCustom){
+            Calendar buildTimestamp, Map<String, String> applitoolsValuesFromArtifacts,
+            MutableBoolean isCustom) {
         if (applitoolsValuesFromArtifacts != null &&
                 applitoolsValuesFromArtifacts.containsKey(ApplitoolsEnvironmentUtil.APPLITOOLS_BATCH_ID)) {
             return applitoolsValuesFromArtifacts.get(ApplitoolsEnvironmentUtil.APPLITOOLS_BATCH_ID);
@@ -133,5 +142,10 @@ public class ApplitoolsStatusDisplayAction extends AbstractApplitoolsStatusDispl
         }
         return null;
     }
-}
 
+    public void doWaitForResults(StaplerRequest req, StaplerResponse rsp) throws ServletException, IOException {
+        if (req.getMethod().equals("GET") && req.getRequestURI().endsWith("/waitForResults")) {
+            rsp.serveFile(req, getClass().getResource("/waitForResults.html"));
+        }
+    }
+}
