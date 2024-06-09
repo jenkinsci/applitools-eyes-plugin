@@ -64,6 +64,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
     public boolean getDontCloseBatches() {
         return this.dontCloseBatches;
     }
+
     public boolean getEyesScmIntegrationEnabled() {
         return this.eyesScmIntegrationEnabled;
     }

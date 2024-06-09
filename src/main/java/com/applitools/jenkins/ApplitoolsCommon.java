@@ -143,6 +143,8 @@ public class ApplitoolsCommon {
         String batchId = ApplitoolsStatusDisplayAction.generateBatchId(
                 env, projectName, build.getNumber(), build.getTimestamp(), artifacts, isCustom, scmIntegrationEnabled);
 
+        String batchId1 = System.getenv("APPLITOOLS_BATCH_ID");
+
         if (scmIntegrationEnabled) {
 
             String buildId = null;
@@ -195,14 +197,14 @@ public class ApplitoolsCommon {
 
         String filepath = ARTIFACT_PATHS.get(APPLITOOLS_ARTIFACT_PREFIX + "_" + APPLITOOLS_BATCH_ID);
         FilePath batchIdFilePath = workspace.child(filepath);
-        if (isCustom.isTrue()) {
+        //if (isCustom.isTrue()) {
             try {
                 batchIdFilePath.write(batchId, StandardCharsets.UTF_8.name());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
             archiveArtifacts(build, workspace, launcher, listener);
-        }
+        //}
         String batchName = projectName;
         ApplitoolsEnvironmentUtil.outputVariables(listener, build, env, serverURL, batchName, batchId, projectName,
                 applitoolsApiKey);
@@ -242,8 +244,8 @@ public class ApplitoolsCommon {
     public static void closeBatch(Run<?, ?> run, TaskListener listener, String serverURL,
                                   boolean notifyOnCompletion, String applitoolsApiKey, boolean scmIntegrationEnabled)
             throws IOException {
-        if (notifyOnCompletion && applitoolsApiKey != null && !applitoolsApiKey.isEmpty()) {
-            String batchId = ApplitoolsStatusDisplayAction.generateBatchId(
+        if (applitoolsApiKey != null && !applitoolsApiKey.isEmpty()) {
+            String batchId = ApplitoolsStatusDisplayAction.getBatchId(
                     env,
                     run.getParent().getDisplayName(),
                     run.getNumber(),
@@ -252,7 +254,7 @@ public class ApplitoolsCommon {
                             run.getArtifacts(),
                             run.getArtifactManager().root()
                     ),
-                    null, scmIntegrationEnabled
+                    null
             );
             HttpClient httpClient = HttpClientBuilder.create().build();
             URI targetUrl = null;
