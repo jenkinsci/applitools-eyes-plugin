@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -10,7 +12,7 @@
     </parent>
 
     <artifactId>applitools-eyes</artifactId>
-    <version>1.16.3</version>
+    <version>1.16.4</version>
     <packaging>hpi</packaging>
     <name>Applitools Eyes Plugin</name>
     <url>https://github.com/jenkinsci/applitools-eyes-plugin</url>
@@ -31,11 +33,8 @@
 
     <properties>
         <gitHubRepo>jenkinsci/applitools-eyes-plugin</gitHubRepo>
-        <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-        <!-- Recommended version: https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-        <jenkins.version>2.452.1</jenkins.version>
-        <!-- <= 1.71 vulnerable: https://www.jenkins.io/security/advisory/2019-03-06/#SECURITY-1342 -->
-        <plugins.job-dsl.version>1.72</plugins.job-dsl.version>
+        <jenkins.version>2.346.1</jenkins.version>
+        <plugins.job-dsl.version>1.71</plugins.job-dsl.version>
         <version>${project.version}</version>
     </properties>
 
@@ -65,14 +64,32 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.jenkins-ci.tools</groupId>
+                <artifactId>maven-hpi-plugin</artifactId>
+                <version>3.32</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <goal>hpi:validate-hpi</goal>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.361.x</artifactId>
-                <version>2102.v854b_fec19c92</version>
+                <artifactId>bom-2.346.x</artifactId>
+                <version>1763.v092b_8980a_f5e</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -99,28 +116,18 @@
             <artifactId>apache-httpcomponents-client-4-api</artifactId>
         </dependency>
     </dependencies>
+
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
             <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>repo.jenkins-ci.org</id>
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
-    <!--  <distributionManagement>-->
-    <!--    <repository>-->
-    <!--      <id>central</id>-->
-    <!--      <name>jenkinsci-releases</name>-->
-    <!--      <url>https://repo.jenkins-ci.org/artifactory/releases</url>-->
-    <!--    </repository>-->
-    <!--    <snapshotRepository>-->
-    <!--      <id>snapshots</id>-->
-    <!--      <name>jenkinsci-snapshots</name>-->
-    <!--      <url>https://repo.jenkins-ci.org/artifactory/snapshots</url>-->
-    <!--    </snapshotRepository>-->
-    <!--  </distributionManagement>-->
 </project>

@@ -143,7 +143,7 @@ public class ApplitoolsCommon {
         String batchId = ApplitoolsStatusDisplayAction.generateBatchId(
                 env, projectName, build.getNumber(), build.getTimestamp(), artifacts, isCustom, scmIntegrationEnabled);
 
-        String batchId1 = System.getenv("APPLITOOLS_BATCH_ID");
+        // String batchId1 = System.getenv("APPLITOOLS_BATCH_ID");
 
         if (scmIntegrationEnabled) {
 
