@@ -101,20 +101,22 @@
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-step-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins.workflow</groupId>
-            <artifactId>workflow-job</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jenkins-ci.plugins.workflow</groupId>-->
+<!--            <artifactId>workflow-job</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>job-dsl</artifactId>
             <version>${plugins.job-dsl.version}</version>
-            <optional>true</optional>
         </dependency>
+
         <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>apache-httpcomponents-client-4-api</artifactId>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5</version>
         </dependency>
+
     </dependencies>
 
     <repositories>
