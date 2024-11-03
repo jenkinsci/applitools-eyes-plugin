@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>applitools-eyes</artifactId>
-    <version>1.16.3</version>
+    <version>1.16.5</version>
     <packaging>hpi</packaging>
     <name>Applitools Eyes Plugin</name>
     <url>https://github.com/jenkinsci/applitools-eyes-plugin</url>
