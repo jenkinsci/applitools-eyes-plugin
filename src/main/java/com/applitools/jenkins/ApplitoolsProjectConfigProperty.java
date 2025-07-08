@@ -21,7 +21,7 @@ public class ApplitoolsProjectConfigProperty extends JobProperty<AbstractProject
 
     public ApplitoolsProjectConfigProperty(String serverURL, boolean notifyOnCompletion, String applitoolsApiKey,
                                            boolean dontCloseBatches, boolean eyesScmIntegrationEnabled) {
-        this.serverURL = serverURL;
+        this.setServerURL(serverURL);
         this.notifyOnCompletion = notifyOnCompletion;
         this.applitoolsApiKey = applitoolsApiKey;
         this.dontCloseBatches = dontCloseBatches;
@@ -43,7 +43,11 @@ public class ApplitoolsProjectConfigProperty extends JobProperty<AbstractProject
 
     public void setServerURL(String serverURL)
     {
-        this.serverURL = serverURL;
+        if (ApplitoolsBuildWrapper.DescriptorImpl.validURL(serverURL)) {
+            this.serverURL = serverURL.trim();
+        } else {
+            this.serverURL = ApplitoolsCommon.APPLITOOLS_DEFAULT_URL;
+        }
     }
 
     public boolean getNotifyOnCompletion() { return this.notifyOnCompletion; }

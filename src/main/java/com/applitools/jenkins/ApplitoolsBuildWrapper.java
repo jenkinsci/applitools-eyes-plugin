@@ -147,11 +147,17 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
             return true;
         }
 
-        private static boolean validURL(String url)
+        public static boolean validURL(String url)
         {
+            if (url == null) return false;
+            url = url.trim();
+            if (url.isEmpty()) return false;
             // Just making sure the URL is valid.
             try {
-                new URL(url);
+                URL uri = new URL(url);
+                if (uri.getQuery() != null){
+                    return false;
+                }
             } catch (Exception ex) {
                 return false;
             }
