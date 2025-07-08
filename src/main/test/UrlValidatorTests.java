@@ -1,6 +1,6 @@
 import com.applitools.jenkins.ApplitoolsBuildWrapper;
 import org.junit.Assert;
-import org.testng.annotations.*;
+import org.junit.Test;
 
 public class UrlValidatorTests {
 
