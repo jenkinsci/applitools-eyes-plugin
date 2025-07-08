@@ -1,5 +1,6 @@
 package com.applitools.jenkins;
 
+import org.owasp.encoder.Encode;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.FilePath;
@@ -8,6 +9,7 @@ import hudson.model.*;
 import hudson.tasks.BuildWrapper;
 import hudson.util.FormValidation;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -147,15 +149,22 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
             return true;
         }
 
-        private static boolean validURL(String url)
-        {
-            // Just making sure the URL is valid.
-            try {
-                new URL(url);
-            } catch (Exception ex) {
-                return false;
+        public static boolean validURL(String url) {
+            if (url != null) {
+                url = url.trim();
+                if (!url.isEmpty()) {
+                    String sanitizedUrl = Encode.forHtmlAttribute(url);
+                    if (sanitizedUrl.equals(url)) {
+                        try {
+                            URL uri = new URL(url);
+                            return uri.getQuery() == null && uri.getHost() != null && !uri.getHost().isEmpty();
+                        } catch (MalformedURLException e) {
+                            return false;
+                        }
+                    }
+                }
             }
-            return true;
+            return false;
         }
 
         public FormValidation doCheckServerURL(@QueryParameter String value)
