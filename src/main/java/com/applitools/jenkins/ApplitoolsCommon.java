@@ -154,14 +154,14 @@ public class ApplitoolsCommon {
             }
 
             String apiKeySysEnv = System.getenv("APPLITOOLS_API_KEY");
-            if (applitoolsApiKey.equals(apiKeySysEnv)) {
+            if (applitoolsApiKey.getPlainText().equals(apiKeySysEnv)) {
                 listener.getLogger().println("API Key is the same as the one in the system environment variable APPLITOOLS_API_KEY");
             } else {
                 listener.getLogger().println("API Key is different from the one in the system environment variable APPLITOOLS_API_KEY");
             }
 
             String apiKeyEnv = env.get("APPLITOOLS_API_KEY");
-            if (applitoolsApiKey.equals(apiKeyEnv)) {
+            if (applitoolsApiKey.getPlainText().equals(apiKeyEnv)) {
                 listener.getLogger().println("API Key is the same as the one in the environment variable APPLITOOLS_API_KEY");
             } else {
                 listener.getLogger().println("API Key is different from the one in the environment variable APPLITOOLS_API_KEY");
