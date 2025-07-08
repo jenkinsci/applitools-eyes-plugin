@@ -6,6 +6,7 @@ import hudson.model.JobPropertyDescriptor;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.Job;
+import hudson.util.Secret;
 
 import java.io.Serializable;
 
@@ -15,11 +16,11 @@ import java.io.Serializable;
 public class ApplitoolsProjectConfigProperty extends JobProperty<AbstractProject<?, ?>> implements Serializable{
     private String serverURL;
     private boolean notifyOnCompletion;
-    private String applitoolsApiKey;
+    private Secret applitoolsApiKey;
     private boolean dontCloseBatches;
     private boolean eyesScmIntegrationEnabled;
 
-    public ApplitoolsProjectConfigProperty(String serverURL, boolean notifyOnCompletion, String applitoolsApiKey,
+    public ApplitoolsProjectConfigProperty(String serverURL, boolean notifyOnCompletion, Secret applitoolsApiKey,
                                            boolean dontCloseBatches, boolean eyesScmIntegrationEnabled) {
         this.setServerURL(serverURL);
         this.notifyOnCompletion = notifyOnCompletion;
@@ -28,11 +29,11 @@ public class ApplitoolsProjectConfigProperty extends JobProperty<AbstractProject
         this.eyesScmIntegrationEnabled = eyesScmIntegrationEnabled;
     }
 
-    public String getApplitoolsApiKey() {
+    public Secret getApplitoolsApiKey() {
         return applitoolsApiKey;
     }
 
-    public void setApplitoolsApiKey(String value) {
+    public void setApplitoolsApiKey(Secret value) {
         this.applitoolsApiKey = value;
     }
 

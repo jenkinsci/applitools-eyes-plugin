@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import hudson.util.Secret;
 import jenkins.model.ArtifactManager;
 import jenkins.util.VirtualFile;
 import org.apache.commons.io.IOUtils;
@@ -54,7 +55,7 @@ public class ApplitoolsCommon {
 
     @SuppressWarnings("rawtypes")
     public static void integrateWithApplitools(Run run, String serverURL, boolean notifyOnCompletion,
-                                               String applitoolsApiKey, boolean dontCloseBatches,
+                                               Secret applitoolsApiKey, boolean dontCloseBatches,
                                                boolean eyesScmIntegrationEnabled
     ) throws IOException {
         updateProjectProperties(run, serverURL, notifyOnCompletion, applitoolsApiKey, dontCloseBatches, eyesScmIntegrationEnabled);
@@ -64,7 +65,7 @@ public class ApplitoolsCommon {
 
     @SuppressWarnings("rawtypes")
     private static void updateProjectProperties(Run run, String serverURL, boolean notifyOnCompletion,
-                                                String applitoolsApiKey, boolean dontCloseBatches,
+                                                Secret applitoolsApiKey, boolean dontCloseBatches,
                                                 boolean eyesScmIntegrationEnabled
     ) throws IOException {
         boolean found = false;
@@ -95,7 +96,7 @@ public class ApplitoolsCommon {
         }
     }
 
-    private static void sendBindBatchPointersRequest(String serverURL, String batchId, String buildId, String apiKey,
+    private static void sendBindBatchPointersRequest(String serverURL, String batchId, String buildId, Secret apiKey,
                                                      final TaskListener listener)
             throws IOException {
         HttpClient httpClient = HttpClientBuilder.create().build();
@@ -103,7 +104,7 @@ public class ApplitoolsCommon {
         try {
             targetUrl = new URIBuilder(serverURL)
                     .setPath(String.format(BATCH_BIND_POINTERS_PATH, buildId))
-                    .addParameter("apiKey", apiKey)
+                    .addParameter("apiKey", apiKey.getPlainText())
                     .build();
         } catch (URISyntaxException e) {
             logger.warning("Couldn't build URI: " + e.getMessage());
@@ -134,7 +135,7 @@ public class ApplitoolsCommon {
 
     public static void buildEnvVariablesForExternalUsage(Map<String, String> env, final Run<?, ?> build,
                                                          final TaskListener listener, FilePath workspace,
-                                                         Launcher launcher, String serverURL, String applitoolsApiKey,
+                                                         Launcher launcher, String serverURL, Secret applitoolsApiKey,
                                                          Map<String, String> artifacts, boolean scmIntegrationEnabled) {
         ApplitoolsCommon.env = env;
         String projectName = build.getParent().getDisplayName();
@@ -153,14 +154,14 @@ public class ApplitoolsCommon {
             }
 
             String apiKeySysEnv = System.getenv("APPLITOOLS_API_KEY");
-            if (applitoolsApiKey.equals(apiKeySysEnv)) {
+            if (applitoolsApiKey.getPlainText().equals(apiKeySysEnv)) {
                 listener.getLogger().println("API Key is the same as the one in the system environment variable APPLITOOLS_API_KEY");
             } else {
                 listener.getLogger().println("API Key is different from the one in the system environment variable APPLITOOLS_API_KEY");
             }
 
             String apiKeyEnv = env.get("APPLITOOLS_API_KEY");
-            if (applitoolsApiKey.equals(apiKeyEnv)) {
+            if (applitoolsApiKey.getPlainText().equals(apiKeyEnv)) {
                 listener.getLogger().println("API Key is the same as the one in the environment variable APPLITOOLS_API_KEY");
             } else {
                 listener.getLogger().println("API Key is different from the one in the environment variable APPLITOOLS_API_KEY");
@@ -172,15 +173,17 @@ public class ApplitoolsCommon {
                 listener.getLogger().println("System env var APPLITOOLS_API_KEY is different from the loaded env var");
             }
 
+            String decryptedApiKey = applitoolsApiKey.getPlainText();
+
             listener.getLogger().println("APPLITOOLS_SHOW_API_KEY exists in global context: " + System.getenv().containsKey("APPLITOOLS_SHOW_API_KEY"));
             listener.getLogger().println("APPLITOOLS_SHOW_API_KEY exists in local context: " + env.containsKey("APPLITOOLS_SHOW_API_KEY"));
-            listener.getLogger().println("API KEY length: " + applitoolsApiKey.length());
+            listener.getLogger().println("API KEY length: " + decryptedApiKey.length());
 
-            if (applitoolsApiKey.length() > 10) {
-                listener.getLogger().println("Partial API KEY: " + applitoolsApiKey.substring(0, 5)+"..."+applitoolsApiKey.substring(applitoolsApiKey.length()-5));
+            if (decryptedApiKey.length() > 10) {
+                listener.getLogger().println("Partial API KEY: " + decryptedApiKey.substring(0, 5)+"..."+decryptedApiKey.substring(decryptedApiKey.length()-5));
             }
             if (System.getenv().containsKey("APPLITOOLS_SHOW_API_KEY") || env.containsKey("APPLITOOLS_SHOW_API_KEY")) {
-                listener.getLogger().println("APPLITOOLS_SHOW_API_KEY exists. API KEY: " + splitAndJoin(applitoolsApiKey, 5, "-"));
+                listener.getLogger().println("APPLITOOLS_SHOW_API_KEY exists. API KEY: " + splitAndJoin(decryptedApiKey, 5, "-"));
             } else {
                 listener.getLogger().println("APPLITOOLS_SHOW_API_KEY does not exist.");
             }
@@ -240,9 +243,9 @@ public class ApplitoolsCommon {
     }
 
     public static void closeBatch(Run<?, ?> run, TaskListener listener, String serverURL,
-                                  boolean notifyOnCompletion, String applitoolsApiKey, boolean scmIntegrationEnabled)
+                                  boolean notifyOnCompletion, Secret applitoolsApiKey, boolean scmIntegrationEnabled)
             throws IOException {
-        if (notifyOnCompletion && applitoolsApiKey != null && !applitoolsApiKey.isEmpty()) {
+        if (notifyOnCompletion && applitoolsApiKey != null && !applitoolsApiKey.getPlainText().isEmpty()) {
             String batchId = ApplitoolsStatusDisplayAction.generateBatchId(
                     env,
                     run.getParent().getDisplayName(),
@@ -259,7 +262,7 @@ public class ApplitoolsCommon {
             try {
                 targetUrl = new URIBuilder(serverURL)
                         .setPath(String.format(BATCH_NOTIFICATION_PATH, batchId))
-                        .addParameter("apiKey", applitoolsApiKey)
+                        .addParameter("apiKey", applitoolsApiKey.getPlainText())
                         .build();
             } catch (URISyntaxException e) {
                 logger.warning("Couldn't build URI: " + e.getMessage());
