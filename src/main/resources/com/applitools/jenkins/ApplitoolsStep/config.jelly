@@ -5,7 +5,7 @@
         <f:textbox default="${descriptor.APPLITOOLS_DEFAULT_URL}"/>
     </f:entry>
     <f:entry title="${%applitoolsApiKey.text.text}" field="applitoolsApiKey">
-        <f:textbox />
+        <f:password />
     </f:entry>
     <f:entry title="${%notifyOnCompletion.text.text}" field="notifyOnCompletion">
         <f:checkbox default="${descriptor.NOTIFY_ON_COMPLETION}"/>

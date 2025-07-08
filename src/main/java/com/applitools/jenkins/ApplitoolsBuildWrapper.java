@@ -12,6 +12,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
+
+import hudson.util.Secret;
 import jenkins.util.VirtualFile;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
@@ -26,7 +28,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
     public final static String BATCH_NOTIFICATION_PATH = "/api/sessions/batches/%s/close/bypointerid";
     public String serverURL;
     public boolean notifyOnCompletion;
-    public String applitoolsApiKey;
+    public Secret applitoolsApiKey;
     public boolean dontCloseBatches;
     public boolean eyesScmIntegrationEnabled;
     static boolean isCustomBatchId = false;
@@ -46,7 +48,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
 
     @DataBoundConstructor
     public ApplitoolsBuildWrapper(String serverURL, boolean notifyOnCompletion,
-                                  String applitoolsApiKey, boolean dontCloseBatches, boolean eyesScmIntegrationEnabled) {
+                                  Secret applitoolsApiKey, boolean dontCloseBatches, boolean eyesScmIntegrationEnabled) {
         this.applitoolsApiKey = applitoolsApiKey;
         this.notifyOnCompletion = notifyOnCompletion;
         this.dontCloseBatches = dontCloseBatches;
@@ -183,7 +185,7 @@ public class ApplitoolsBuildWrapper extends BuildWrapper implements Serializable
             return new ApplitoolsBuildWrapper(
                     formData.getString("serverURL"),
                     formData.getBoolean("notifyOnCompletion"),
-                    formData.getString("applitoolsApiKey"),
+                    Secret.fromString(formData.getString("applitoolsApiKey")),
                     formData.getBoolean("dontCloseBatches"),
                     formData.getBoolean("eyesScmIntegrationEnabled"));
         }

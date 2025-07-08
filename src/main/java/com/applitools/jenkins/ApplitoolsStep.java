@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import hudson.util.Secret;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workflow.steps.*;
 import org.jenkinsci.plugins.workflow.steps.AbstractStepExecutionImpl;
@@ -27,14 +29,14 @@ import static com.applitools.jenkins.ApplitoolsBuildWrapper.isCustomBatchId;
 public class ApplitoolsStep extends AbstractStepImpl {
     private String serverURL;
     private final boolean notifyOnCompletion;
-    private final String applitoolsApiKey;
+    private final Secret applitoolsApiKey;
     private final boolean dontCloseBatches;
     private final boolean eyesScmIntegrationEnabled;
 
     @DataBoundConstructor
     public ApplitoolsStep(String serverURL,
                           boolean notifyOnCompletion,
-                          String applitoolsApiKey,
+                          Secret applitoolsApiKey,
                           boolean dontCloseBatches,
                           boolean eyesScmIntegrationEnabled)
     {
@@ -53,7 +55,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
         return ApplitoolsCommon.APPLITOOLS_DEFAULT_URL;
     }
 
-    public String getApplitoolsApiKey() {
+    public Secret getApplitoolsApiKey() {
         return this.applitoolsApiKey;
     }
 
@@ -200,7 +202,7 @@ public class ApplitoolsStep extends AbstractStepImpl {
             return new ApplitoolsStep(
                     formData.getString("serverURL"),
                     formData.getBoolean("notifyOnCompletion"),
-                    formData.getString("applitoolsApiKey"),
+                    Secret.fromString(formData.getString("applitoolsApiKey")),
                     formData.getBoolean("dontCloseBatches"),
                     formData.getBoolean("eyesScmIntegrationEnabled")
                     );

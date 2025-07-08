@@ -1,6 +1,7 @@
 package com.applitools.jenkins;
 
 import hudson.Extension;
+import hudson.util.Secret;
 import javaposse.jobdsl.dsl.helpers.wrapper.WrapperContext;
 import javaposse.jobdsl.plugin.ContextExtensionPoint;
 import javaposse.jobdsl.plugin.DslExtensionMethod;
@@ -19,14 +20,14 @@ public class ApplitoolsJobDsl extends ContextExtensionPoint {
     }
 
     @DslExtensionMethod(context = WrapperContext.class)
-    public Object applitools(String serverUrl, boolean notifyOnCompletion, String apiKey) {
+    public Object applitools(String serverUrl, boolean notifyOnCompletion, Secret apiKey) {
         return new ApplitoolsBuildWrapper(
                 serverUrl, notifyOnCompletion, apiKey, false, false);
     }
 
 
     @DslExtensionMethod(context = WrapperContext.class)
-    public Object applitools(String serverUrl, String apiKey) {
+    public Object applitools(String serverUrl, Secret apiKey) {
         return new ApplitoolsBuildWrapper(
                 serverUrl, true, apiKey, false, false);
     }
